@@ -31,7 +31,6 @@ read -p "Do you want to continue? (y/N)? " choice
 	  * ) echo -e "\nInstallation aborted"; exit;;
 	esac
 
-exit
 ## Installing the required programs
 echo -e '\nInstalling the required programs...'
 apt-get update
