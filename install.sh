@@ -26,7 +26,7 @@ read zwave;
 echo -e "\n-- Parameters summary --"
 echo -e "HOST: $host, USERNAME: $username, PASSWORD: $password, BINDING: $zwave "
 read -p "Do you want to continue? (y/N)? " choice
-	case "$choice" in 
+	case "$choice" in
 	  y|Y ) echo -e "\nStarting the installation process...";;
 	  * ) echo -e "\nInstallation aborted"; exit;;
 	esac
@@ -34,7 +34,7 @@ read -p "Do you want to continue? (y/N)? " choice
 ## Installing the required programs
 echo -e '\nInstalling the required programs...'
 apt-get update
-apt-get --assume-yehosts install git python python-pip jq socat >/dev/null
+apt-get --assume-yes install git python python-pip jq socat >/dev/null
 pip install homie
 
 
@@ -73,23 +73,24 @@ cd /root
 cd $name
 cp configuration_default.json configuration.json
 if [[ ! -z "${host// }" ]]; then
-   jq --indent 4 --arg _host $host  '. | .HOST=$_host' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
+   jq --arg _host $host  '. | .HOST=$_host' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
 fi
 if [[ ! -z "${username// }" ]]; then
-   jq --indent 4 --arg _user $username '. | .USERNAME=$_user' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
+   jq --arg _user $username '. | .USERNAME=$_user' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
 fi
 if [[ ! -z "${password// }" ]]; then
-   jq --indent 4 --arg _pass $password '. | .PASSWORD=$_pass' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
+   jq --arg _pass $password '. | .PASSWORD=$_pass' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
 fi
 if [[ ! -z "${zwave// }" ]]; then
-   jq --indent 4 --arg _zwave $zwave '. | .DEVICE_ID=$_zwave | .DEVICE_NAME=$_zwave' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
+   jq --arg _zwave $zwave '. | .DEVICE_ID=$_zwave | .DEVICE_NAME=$_zwave' configuration.json > tmp.$$.json && mv tmp.$$.json configuration.json
 fi
+rm -rf tmp.*.json
 
 
 ## Removing the git repository
 echo
 read -p "Do you want to remove the git repository from your computer (y/N)? " choice
-case "$choice" in 
+case "$choice" in
   y|Y ) echo -e "Deleting the git repository..."; rm -rf /tmp/$name;;
   * ) echo -e "Keeping the git repository...";;
 esac
