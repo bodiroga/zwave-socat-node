@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+### BEGIN INIT INFO
+# Provides: zwave-socat-node
+# Required-Start: $syslog
+# Required-Stop: $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: Startup/Shutdown zwave-socat-node
+### END INIT INFO
+
+case "$1" in
+    start)
+        # Start ZWave-Socat-Node
+        echo -n "Starting ZWave-Socat-Node..."
+        /usr/bin/python /root/zwave-socat-node/zwave-socat-node.py &
+        echo "OK"
+        ;;
+    status)
+        # Check ZWave-Socat-Node status
+        echo "Checking ZWave-Socat-Node status..."
+        PID=$(ps aux | grep 'zwave-socat-node.py' | grep python | awk '{print $2}')
+        if ps aux | grep 'zwave-socat-node.py' | grep python > /dev/null 2> /dev/null; then
+           echo "Service is running: $PID"
+        else
+           echo "Service is not running"
+        fi
+        ;;
+    stop)
+        # Stop ZWave-Socat-Node
+        echo -n "Shutdown ZWave-Socat-Node ... "
+        kill -9 $(ps aux | grep 'zwave-socat-node.py' | awk '{print $2}') 2> /dev/null
+        echo "OK"
+        ;;
+    reload|restart)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 start|stop|restart|status|reload"
+        exit 1
+esac
+exit 0

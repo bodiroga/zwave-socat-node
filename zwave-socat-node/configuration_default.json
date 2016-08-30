@@ -1,0 +1,12 @@
+{
+    "HOST": "",
+    "PORT": 1883,
+    "KEEPALIVE": 5,
+    "USERNAME": "",
+    "PASSWORD": "",
+    "CA_CERTS": "",
+    "DEVICE_ID": "",
+    "DEVICE_NAME": "",
+    "TOPIC": "devices"
+}
+
