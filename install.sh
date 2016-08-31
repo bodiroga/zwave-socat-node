@@ -31,6 +31,7 @@ read -p "Do you want to continue? (y/N)? " choice
 	  * ) echo -e "\nInstallation aborted"; exit;;
 	esac
 
+
 ## Installing the required programs
 echo -e '\nInstalling the required programs...'
 apt-get update
@@ -94,6 +95,16 @@ case "$choice" in
   y|Y ) echo -e "Deleting the git repository..."; rm -rf /tmp/$name;;
   * ) echo -e "Keeping the git repository...";;
 esac
+
+
+## Start the program
+echo
+read -p "Do you want to start the program now (y/N)? " choice
+case "$choice" in
+  y|Y|s|S ) echo -e "Starting the program..."; /etc/init.d/$name start;;
+  * ) echo -e "You can start the program typing '/etc/init.d/$name start'";;
+esac
+
 
 ## Done
 echo -e "\nDone."
