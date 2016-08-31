@@ -8,8 +8,9 @@ import subprocess
 logging.basicConfig(filename='/var/log/zwave-socat-node.log', format='%(asctime)s %(levelname)-8s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-zwave_port = "/dev/zwave"
-socat_port = 54321
+ZWAVE_PORT = "/dev/zwave"
+SOCAT_PORT = 54321
+REPORT_INTERVAL = 60 # seconds
 
 try:
     Homie = homie.Homie("%s/configuration.json" % (os.path.dirname(os.path.realpath(__file__))))
@@ -18,6 +19,7 @@ except:
     sys.exit(1)
 
 socatNode = Homie.Node("socat", "socat")
+timeNode = Homie.Node("time", "time")
 
 def get_zwave_stick_status(zwave_stick_path):
     try:
@@ -31,7 +33,7 @@ class SocatHandler(object):
 
     def start_local_socat(self):
         try:
-            command = "/usr/bin/socat tcp-l:%s,reuseaddr,fork file:%s,raw,nonblock,echo=0" % (socat_port,zwave_port)
+            command = "/usr/bin/socat tcp-l:%s,reuseaddr,fork file:%s,raw,nonblock,echo=0" % (SOCAT_PORT, ZWAVE_PORT)
             result = subprocess.Popen(command.split(" "))
             self.process_id = result.pid
             logger.info("Local socat process started with pid: %s" % (self.process_id))
@@ -67,9 +69,10 @@ def main():
     while (not Homie.mqtt_connected):
         time.sleep(0.1)
 
-    Homie.setNodeProperty(socatNode, "port", socat_port, True)
+    Homie.setNodeProperty(socatNode, "port", SOCAT_PORT, True)
+    Homie.setNodeProperty(timeNode, "last_report", int(time.time()), True)
     while True:
-        new_stick_status = get_zwave_stick_status(zwave_port)
+        new_stick_status = get_zwave_stick_status(ZWAVE_PORT)
         new_connection_status = Homie.mqtt_connected
         if old_stick_status != new_stick_status:
             logger.info("Stick state: %s" % (new_stick_status))
@@ -80,6 +83,8 @@ def main():
             Homie.setNodeProperty(socatNode, "status", str(new_stick_status).lower(), True)
         old_stick_status = new_stick_status
         old_connection_status = new_connection_status
+        if int(time.time()) % REPORT_INTERVAL == 0:
+            Homie.setNodeProperty(timeNode, "last_report", int(time.time()), True)   
         time.sleep(0.3)
 
 if __name__ == '__main__':
