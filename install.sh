@@ -97,12 +97,12 @@ case "$choice" in
 esac
 
 
-## Start the program
+## Restart the device
 echo
-read -p "Do you want to start the program now (y/N)? " choice
+read -p "Do you want to restart your device now (y/N)? " choice
 case "$choice" in
-  y|Y|s|S ) echo -e "Starting the program..."; /etc/init.d/$name restart;;
-  * ) echo -e "You can start the program typing '/etc/init.d/$name start'";;
+  y|Y|s|S ) echo -e "Restarting the device..."; reboot;;
+  * ) echo -e "You need to restart your device to finish the installation process";;
 esac
 
 
