@@ -36,7 +36,7 @@ read -p "Do you want to continue? (y/N)? " choice
 echo -e '\nInstalling the required programs...'
 apt-get update
 apt-get --assume-yes install git python python-pip jq socat >/dev/null
-pip install homie
+pip install homie==0.2.2	
 
 
 ## Cloning the github repository
